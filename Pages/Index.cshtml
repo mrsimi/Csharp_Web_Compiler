@@ -1,0 +1,90 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@Html.AntiForgeryToken()
+<div class="code-pad">
+    <div class="code-editor">
+        <button id="run-btn" class="btn btn-primary" onclick="PostCode()">Run</button>
+        <textarea id="code-content"></textarea>
+
+    </div>
+    <div class="code-output">
+        <div class="code-console">
+            Output => <br>
+            <p id="output"></p>
+        </div>
+        @* <div class="code-docs">Docs</div> *@
+    </div>
+</div>
+
+<script>
+    function PostCode(){
+        $.ajax({
+            url: '/',
+            type: 'POST', 
+            headers:{
+                "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+            },
+            data: {writtenCode: $('#code-content').val()},
+            success: function(response){
+                console.log(response)
+                document.getElementById("output").textContent = response;
+            }
+        })
+    }
+</script>
+
+
+<style>
+    .code-pad {
+        background-color: rebeccapurple;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .code-editor {
+        width: 50%;
+        background-color: white;
+    }
+
+    .code-output {
+        display: flex;
+        flex-direction: column;
+        width: 50%
+    }
+
+    .code-console {
+        height: 100%;
+        background-color: whitesmoke;
+        padding: 20px;
+        font-size: 12px;
+    }
+
+    #run-btn {
+        position: absolute;
+        z-index: 2;
+        right: 50%;
+        margin: 10px;
+    }
+
+    textarea {
+        position: absolute;
+        font-size: 12px;
+        border: 0;
+        width: 50%;
+        padding: 10px;
+        border: none;
+        overflow: auto;
+        outline: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        resize: none;
+        height: 100vh;
+    }
+</style>
